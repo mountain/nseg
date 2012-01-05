@@ -13,64 +13,6 @@
  *
  */
 
-function helpDict() {
-    console.log('  Examples:');
-    console.log();
-    console.log('    $ mmseg dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt');
-    console.log('    $ mmseg dict ~/project/data/dict.js ~/dict');
-    console.log();
-    console.log('  Data format:');
-    console.log();
-    console.log('    general plain text files containing all vocabularies, one word per line.');
-    console.log();
-    console.log('  Output:');
-    console.log();
-    console.log('    A javascript file of the trie structure for all your vocabularies.');
-    console.log();
-}
-
-function helpFreq() {
-    console.log('  Examples:');
-    console.log();
-    console.log('    $ mmseg freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv');
-    console.log('    $ mmseg freq ~/project/data/freq.js ~/freq');
-    console.log();
-    console.log('  Data format:');
-    console.log();
-    console.log('    general csv files containing all character-frequency pairs.');
-    console.log();
-    console.log('  Output:');
-    console.log();
-    console.log('    A javascript file of the character-frequency map.');
-    console.log();
-}
-
-function helpSeg() {
-    console.log('  Examples:');
-    console.log();
-    console.log('    $ mmseg seg "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。"');
-    console.log('    $ mmseg seg -i ~/project/text/shi.txt -o ~/project/output/shi.txt');
-    console.log('    $ mmseg seg -i ~/project/text/a.txt ~/project/text/b.txt -o ~/project/output');
-    console.log('    $ mmseg seg -i ~/project/text -o ~/project/output');
-    console.log();
-}
-
-function helpInspect() {
-    console.log('  Examples:');
-    console.log();
-    console.log('    $ mmseg inspect "石狮"');
-    console.log('    $ mmseg inspect -d ~/project/data/dict.js "石狮"');
-    console.log();
-}
-
-function helpCheck() {
-    console.log('  Examples:');
-    console.log();
-    console.log('    $ mmseg check "石狮"');
-    console.log('    $ mmseg check -d ~/project/data/dict.js "石狮"');
-    console.log();
-}
-
 var program     = new (require('commander').Command)('mmseg'),
     triebuilder = require('./trie-builder'),
     freqbuilder = require('./freq-builder'),
@@ -87,7 +29,21 @@ program
   .action(function(output, inputs){
       console.log('build trie tree at %s for user dictionaries: %s', output, inputs);
       triebuilder.run(output, inputs);
-  }).on('--help', helpDict);
+  }).on('--help', function () {
+      console.log('  Examples:');
+      console.log();
+      console.log('      $ mmseg dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt');
+      console.log('      $ mmseg dict ~/project/data/dict.js ~/dict');
+      console.log();
+      console.log('  Data format:');
+      console.log();
+      console.log('      general plain text files containing all vocabularies, one word per line.');
+      console.log();
+      console.log('  Output:');
+      console.log();
+      console.log('      A javascript file of the trie structure for all your vocabularies.');
+      console.log();
+  });
 
 program
 .command('freq <output> [inputs]')
@@ -95,7 +51,21 @@ program
   .action(function(output, inputs){
       console.log('build character-frequency map at %s for user data: %s', output, inputs);
       freqbuilder.run(output, inputs);
-  }).on('--help', helpFreq);
+  }).on('--help', function () {
+      console.log('  Examples:');
+      console.log();
+      console.log('      $ mmseg freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv');
+      console.log('      $ mmseg freq ~/project/data/freq.js ~/freq');
+      console.log();
+      console.log('  Data format:');
+      console.log();
+      console.log('      general csv files containing all character-frequency pairs.');
+      console.log();
+      console.log('  Output:');
+      console.log();
+      console.log('      A javascript file of the character-frequency map.');
+      console.log();
+  });
 
 program
   .command('seg [text]')
@@ -106,7 +76,15 @@ program
   .option("-o, --output <output>", "Which output file or directory to use")
   .action(function(text, options){
       segmenter.seg(options, text);
-  }).on('--help', helpSeg);
+  }).on('--help', function () {
+      console.log('  Examples:');
+      console.log();
+      console.log('      $ mmseg seg "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。"');
+      console.log('      $ mmseg seg -i ~/project/text/shi.txt -o ~/project/output/shi.txt');
+      console.log('      $ mmseg seg -i ~/project/text/a.txt ~/project/text/b.txt -o ~/project/output');
+      console.log('      $ mmseg seg -i ~/project/text -o ~/project/output');
+      console.log();
+  });
 
 program
   .command('inspect [word]')
@@ -114,7 +92,13 @@ program
   .option("-d, --dictionary <dict>", "Which dictionary to use")
   .action(function(word, options){
       inspector.inspect(options, word);
-  }).on('--help', helpInspect);
+  }).on('--help', function () {
+      console.log('  Examples:');
+      console.log();
+      console.log('      $ mmseg inspect "石狮"');
+      console.log('      $ mmseg inspect -d ~/project/data/dict.js "石狮"');
+      console.log();
+  });
 
 program
   .command('check [word]')
@@ -122,7 +106,13 @@ program
   .option("-d, --dictionary <dict>", "Which dictionary to use")
   .action(function(word, options){
       inspector.check(options, word);
-  }).on('--help', helpCheck);
+  }).on('--help', function () {
+      console.log('  Examples:');
+      console.log();
+      console.log('      $ mmseg check "石狮"');
+      console.log('      $ mmseg check -d ~/project/data/dict.js "石狮"');
+      console.log();
+  });
 
 program
 .command('help [command]')
