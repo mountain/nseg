@@ -1,7 +1,7 @@
 {
   "author": "Mingli Yuan <mingli.yuan+mmseg@gmail.com> (http://onecorner.org/)",
   "name": "mmseg",
-  "description": "Node.js version of MMSEG for Chinese Word Segmentation",
+  "description": "Node.js version of MMSEG for Chinese word segmentation",
   "version": "0.0.0",
   "homepage": "https://github.com/mountain/mmseg",
   "repository": {
@@ -17,8 +17,10 @@
     "scripts": "./scripts"
   },
   "dependencies": {
+    "commander": "latest"
   },
   "devDependencies": {
+    "vows": "latest"
   },
   "bin": {
     "mmseg": "./bin/mmseg"

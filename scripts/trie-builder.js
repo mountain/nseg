@@ -1,4 +1,9 @@
 /**
+ * trie-builder.js: build trie tree for dictionary
+ *
+ * MMSEG module: Node.js version of MMSEG for Chinese word segmentation
+ * https://github.com/mountain/mmseg/
+ *
  * Originally by John Resig
  * https://github.com/jeresig/trie-js/
  * MIT License
@@ -120,6 +125,6 @@ exports.run = function () {
 
     var ret = 'module.exports = ' + JSON.stringify(trie);
 
-    fs.writeFileSync("data/trie.js", ret, "utf8");
+    fs.writeFileSync("data/dict.js", ret, "utf8");
 };
 

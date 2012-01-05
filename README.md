@@ -1,4 +1,4 @@
-Node.js version of MMSEG for Chinese Word Segmentation
+Node.js Version of MMSEG for Chinese Word Segmentation
 ======================================================
 
 MMSEG originally invented by Chih-Hao Tsai is a very popular Chinese word
@@ -31,8 +31,8 @@ segment text using default dictionary
 
     $ mmseg seg "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。"
     $ mmseg seg -i ~/project/text/shi.txt -o ~/project/output/shi.txt
-    $ mmseg seg -i ~/project/text/a.txt ~/project/text/b.txt -O ~/project/output
-    $ mmseg seg -I ~/project/text -O ~/project/output
+    $ mmseg seg -i ~/project/text/a.txt ~/project/text/b.txt -o ~/project/output
+    $ mmseg seg -i ~/project/text -o ~/project/output
 
 build user dictionary for loading aftermath
 
@@ -69,8 +69,10 @@ Preparation
 - (Optional) build your own dictionay and freqency map
 - (Optional) create your own lexical handler for special text pattern
 
-Example
--------
+Examples
+--------
+
+Use case for normal mode
 
 ````javascript
 var dict  = require('../data/dict'),
@@ -81,20 +83,45 @@ var dict  = require('../data/dict'),
 var opts  = {
         dict: dict,
         freq: freq,
-        lex: [date, sina]
+        lex: [date, sina],
+        logger: console
     };
 
-var mmseg = require('mmseg')(opts);
+var mmseg = require('mmseg').normal(opts);
 
 var text = "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。";
 
 var segmented = mmseg(text);
+
+````
+
+Use case for evented mode
+
+````javascript
+var opts  = {
+        dict: dict,
+        freq: freq,
+        lex: [date, sina],
+        logger: console,
+        buffer: 30
+    };
+
+var mmseg = require('mmseg').evented(opts);
+
+mmseg.start(key);
+mmseg.write(key, fragment);
+mmseg.flush(key);
+mmseg.end(key);
+
+mmseg.register(key, function(segments) {
+    console.log(segments);
+});
 ````
 
 Lexical handler customization
 =============================
 
-
+Lexical handlers support definitions by regexp patterns or acceptor functions.
 
 License
 =======
