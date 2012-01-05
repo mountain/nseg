@@ -7,6 +7,12 @@ platforms including Python, Java, etc.
 
 This package provide Node.js version of MMSG algorithm.
 
+Build status
+============
+
+This project is tested with [Travis CI](http://travis-ci.org)
+[![Build Status](https://secure.travis-ci.org/mountain/nmmseg.png)](http://travis-ci.org/mountain/nmmseg)
+
 Install
 =======
 

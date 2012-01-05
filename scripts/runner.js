@@ -3,9 +3,9 @@
 /**
  * runner.js: command line runner
  *
- * MMSEG module: Node.js version of MMSEG for Chinese word segmentation
+ * nmmseg module: Node.js version of MMSEG for Chinese word segmentation
  *
- * https://github.com/mountain/mmseg/
+ * https://github.com/mountain/nmmseg/
  *
  * By Mingli Yuan <mingli.yuan+mmseg@gmail.com> (http://onecorner.org/)
  *
@@ -13,7 +13,7 @@
  *
  */
 
-var program     = new (require('commander').Command)('mmseg'),
+var program     = new (require('commander').Command)('nmmseg'),
     triebuilder = require('./trie-builder'),
     freqbuilder = require('./freq-builder'),
     inspector   = require('./inspector'),
@@ -32,8 +32,8 @@ program
   }).on('--help', function () {
       console.log('  Examples:');
       console.log();
-      console.log('      $ mmseg dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt');
-      console.log('      $ mmseg dict ~/project/data/dict.js ~/dict');
+      console.log('      $ nmmseg dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt');
+      console.log('      $ nmmseg dict ~/project/data/dict.js ~/dict');
       console.log();
       console.log('  Data format:');
       console.log();
@@ -54,8 +54,8 @@ program
   }).on('--help', function () {
       console.log('  Examples:');
       console.log();
-      console.log('      $ mmseg freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv');
-      console.log('      $ mmseg freq ~/project/data/freq.js ~/freq');
+      console.log('      $ nmmseg freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv');
+      console.log('      $ nmmseg freq ~/project/data/freq.js ~/freq');
       console.log();
       console.log('  Data format:');
       console.log();
@@ -79,10 +79,10 @@ program
   }).on('--help', function () {
       console.log('  Examples:');
       console.log();
-      console.log('      $ mmseg seg "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。"');
-      console.log('      $ mmseg seg -i ~/project/text/shi.txt -o ~/project/output/shi.txt');
-      console.log('      $ mmseg seg -i ~/project/text/a.txt ~/project/text/b.txt -o ~/project/output');
-      console.log('      $ mmseg seg -i ~/project/text -o ~/project/output');
+      console.log('      $ nmmseg seg "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。"');
+      console.log('      $ nmmseg seg -i ~/project/text/shi.txt -o ~/project/output/shi.txt');
+      console.log('      $ nmmseg seg -i ~/project/text/a.txt ~/project/text/b.txt -o ~/project/output');
+      console.log('      $ nmmseg seg -i ~/project/text -o ~/project/output');
       console.log();
   });
 
@@ -95,8 +95,8 @@ program
   }).on('--help', function () {
       console.log('  Examples:');
       console.log();
-      console.log('      $ mmseg inspect "石狮"');
-      console.log('      $ mmseg inspect -d ~/project/data/dict.js "石狮"');
+      console.log('      $ nmmseg inspect "石狮"');
+      console.log('      $ nmmseg inspect -d ~/project/data/dict.js "石狮"');
       console.log();
   });
 
@@ -109,8 +109,8 @@ program
   }).on('--help', function () {
       console.log('  Examples:');
       console.log();
-      console.log('      $ mmseg check "石狮"');
-      console.log('      $ mmseg check -d ~/project/data/dict.js "石狮"');
+      console.log('      $ nmmseg check "石狮"');
+      console.log('      $ nmmseg check -d ~/project/data/dict.js "石狮"');
       console.log();
   });
 
@@ -134,5 +134,5 @@ program
 if (process.argv.length > 2)
     program.parse(process.argv);
 else
-    console.log(program.commandHelp());
+    program.parse(['', '', '--help'])
 

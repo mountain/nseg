@@ -1,5 +1,5 @@
 {
-  "author": "Mingli Yuan <mingli.yuan+mmseg@gmail.com> (http://onecorner.org/)",
+  "author": "Mingli Yuan <mingli.yuan+nmmseg@gmail.com> (http://onecorner.org/)",
   "name": "nmmseg",
   "description": "Node.js version of MMSEG for Chinese word segmentation",
   "version": "0.0.0",

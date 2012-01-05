@@ -1,11 +1,11 @@
 /**
  * freq-builder.js: build character frequency map
  *
- * MMSEG module: Node.js version of MMSEG for Chinese word segmentation
+ * nmmseg module: Node.js version of MMSEG for Chinese word segmentation
  *
- * https://github.com/mountain/mmseg/
+ * https://github.com/mountain/nmmseg/
  *
- * By Mingli Yuan <mingli.yuan+mmseg@gmail.com> (http://onecorner.org/)
+ * By Mingli Yuan <mingli.yuan+nmmseg@gmail.com> (http://onecorner.org/)
  *
  * MIT License
  *
@@ -14,7 +14,7 @@
 exports.run = function () {
     var fs = require("fs"),
         txt = fs.readFileSync("data/freq.dic", "utf8"),
-        pairs = txt.replace(/\n/g, " ").split(" "),
+        pairs = txt.replace(/\n/g, ",").split(","),
         freq = {};
 
     for (var i = 0; i < pairs.length;) {
