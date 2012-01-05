@@ -75,11 +75,8 @@ function finishSuffixes(cur, keepEnd, end) {
     }
 }
 
-exports.run = function () {
-    var fs = require("fs"),
-        txt = fs.readFileSync("data/words.dic", "utf8"),
-        words = txt.replace(/\n/g, " ").split(" "),
-        trie = {},
+function build(words) {
+    var trie = {},
         end = {},
         keepEnd = {},
         endings = [ 0 ],
@@ -120,11 +117,22 @@ exports.run = function () {
     finishSuffixes(trie, keepEnd, end);
 
     trie.$ = endings;
-
     trie._ = maxlen;
 
-    var ret = 'module.exports = ' + JSON.stringify(trie);
+    return trie;
+}
 
-    fs.writeFileSync("data/dict.js", ret, "utf8");
+
+var fs   = require("fs"),
+    path = require("path");
+
+exports.run = function (output, inputs) {
+    var txt = fs.readFileSync("data/words.dic", "utf8");
+
+    var words = txt.replace(/\n/g, " ").split(" "),
+        trie  = build(words),
+        body  = 'module.exports = ' + JSON.stringify(trie);
+
+    fs.writeFileSync(output, body, "utf8");
 };
 

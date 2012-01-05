@@ -1,66 +1,66 @@
-Node.js Version of MMSEG for Chinese Word Segmentation
+Node.js Version of MMSG for Chinese Word Segmentation
 ======================================================
 
-MMSEG originally invented by Chih-Hao Tsai is a very popular Chinese word
+MMSG originally invented by Chih-Hao Tsai is a very popular Chinese word
 segmentation algorithm. Many implementations are available on different
 platforms including Python, Java, etc.
 
-This package provide Node.js version of MMSEG algorithm.
+This package provide Node.js version of MMSG algorithm.
 
 Install
 =======
 
-Use mmseg in your own package
+Use nmmsg in your own package
 
-    $ npm install mmseg
+    $ npm install nmmsg
 
-Or if you want to use `mmseg` command
+Or if you want to use `nmmsg` command
 
-    $ npm install -g mmseg
+    $ npm install -g nmmsg
 
 Command line
 ============
 
-After intsalling globally, you can use `mmseg` command to:
+After intsalling globally, you can use `nmmsg` command to:
 
 help
 
-    $ mmseg help
+    $ nmmsg help
 
 segment text using default dictionary
 
-    $ mmseg seg "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。"
-    $ mmseg seg -i ~/project/text/shi.txt -o ~/project/output/shi.txt
-    $ mmseg seg -i ~/project/text/a.txt ~/project/text/b.txt -o ~/project/output
-    $ mmseg seg -i ~/project/text -o ~/project/output
+    $ nmmsg seg "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。"
+    $ nmmsg seg -i ~/project/text/shi.txt -o ~/project/output/shi.txt
+    $ nmmsg seg -i ~/project/text/a.txt ~/project/text/b.txt -o ~/project/output
+    $ nmmsg seg -i ~/project/text -o ~/project/output
 
 build user dictionary for loading aftermath
 
-    $ mmseg build dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt
-    $ mmseg build dict ~/project/data/dict.js ~/dict
+    $ nmmsg build dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt
+    $ nmmsg build dict ~/project/data/dict.js ~/dict
 
 build character-frequecy map for loading aftermath
 
-    $ mmseg build freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv
-    $ mmseg build freq ~/project/data/freq.js ~/freq
+    $ nmmsg build freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv
+    $ nmmsg build freq ~/project/data/freq.js ~/freq
 
 segment text using customized settings
 
-    $ mmseg seg -d ~/project/data/dict.js "石室诗士施氏，嗜食狮，誓食十狮。"
-    $ mmseg seg -d ~/project/data/dict.js -f ~/project/data/freq.js "石室诗士施氏"
-    $ mmseg seg -l ~/project/lex/datetime.js ~/project/lex/sina.js "石室诗士施氏"
+    $ nmmsg seg -d ~/project/data/dict.js "石室诗士施氏，嗜食狮，誓食十狮。"
+    $ nmmsg seg -d ~/project/data/dict.js -f ~/project/data/freq.js "石室诗士施氏"
+    $ nmmsg seg -l ~/project/lex/datetime.js ~/project/lex/sina.js "石室诗士施氏"
 
 inspect the trie structure for a word
 
-    $ mmseg inspect "石狮"
-    $ mmseg inspect -d ~/project/data/dict.js "石狮"
+    $ nmmsg inspect "石狮"
+    $ nmmsg inspect -d ~/project/data/dict.js "石狮"
 
 check the existence of a word
 
-    $ mmseg check "石狮"
-    $ mmseg check -d ~/project/data/dict.js "石狮"
+    $ nmmsg check "石狮"
+    $ nmmsg check -d ~/project/data/dict.js "石狮"
 
-Using mmseg in program
+Using nmmsg in program
 ======================
 
 Preparation
@@ -87,11 +87,11 @@ var opts  = {
         logger: console
     };
 
-var mmseg = require('mmseg').normal(opts);
+var nmmsg = require('nmmsg').normal(opts);
 
 var text = "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。";
 
-var segmented = mmseg(text);
+var segmented = nmmsg(text);
 
 ````
 
@@ -106,14 +106,14 @@ var opts  = {
         buffer: 30
     };
 
-var mmseg = require('mmseg').evented(opts);
+var nmmsg = require('nmmsg').evented(opts);
 
-mmseg.start(key);
-mmseg.write(key, fragment);
-mmseg.flush(key);
-mmseg.end(key);
+nmmsg.start(key);
+nmmsg.write(key, fragment);
+nmmsg.flush(key);
+nmmsg.end(key);
 
-mmseg.register(key, function(segments) {
+nmmsg.register(key, function(segments) {
     console.log(segments);
 });
 ````
