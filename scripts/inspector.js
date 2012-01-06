@@ -11,10 +11,24 @@
  *
  */
 
-var dict     = require('../lib/dict');
+var path = require('path');
 
-exports.inpect = function (options, word) {
+function loadpath(from, to) {
+    if (!to) return '';
+    var lpath = path.relative(from, to);
+    lpath = lpath.substring(0, lpath.length - 3);
+    return lpath;
+}
+
+exports.inspect = function (dictpath, word) {
+    var lpath = loadpath(__dirname, dictpath) || '../data/dict.js',
+        dict  = require(lpath);
+    console.log(require('../lib/dictionary')(dict).inspect(word));
 };
 
-exports.check = function (options, word) {
+exports.check = function (dictpath, word) {
+    var lpath = loadpath(__dirname, dictpath) || '../data/dict.js',
+        dict  = require(lpath);
+    console.log(require('../lib/dictionary')(dict).check(word));
 };
+

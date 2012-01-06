@@ -123,16 +123,87 @@ function build(words) {
 }
 
 
-var fs   = require("fs"),
-    path = require("path");
+var async = require('asyncjs');
 
-exports.run = function (output, inputs) {
-    var txt = fs.readFileSync("data/words.dic", "utf8");
+var counterF = 0;
+var counterD = 0;
+var counterL = 0;
+function handleFile(path, list, next) {
+    //console.log(path);
+    counterF++;
+    //console.log('opened files increased:', counterF);
+    async
+      .files([path])
+      .readFile("utf8")
+      .each(function (file) {
+            var array = file.data.split("\n");
+            delete file.data;
 
-    var words = txt.replace(/\n/g, " ").split(" "),
-        trie  = build(words),
-        body  = 'module.exports = ' + JSON.stringify(trie);
+            for (var i = 0; i < array.length; i++) {
+                list.push(array[i]);
+            }
+      })
+      .end(function (err, result) {
+          counterF--;
+          //console.log('opened files decreased:', counterF);
+          if (err) throw err;
+          next();
+      });
+}
 
-    fs.writeFileSync(output, body, "utf8");
+function handleDirs(path, list, next) {
+    //console.log(path);
+    counterD++;
+    //console.log('opened dirs increased:', counterD);
+    async
+      .readdir(path)
+      .stat()
+      .each(function (file) {
+        if (file.stat.isDirectory()) {
+            handleDirs(file.path, list, next);
+        } else {
+            handleFile(file.path, list, next);
+        }
+      })
+      .end(function (err, result) {
+          counterD--;
+          //console.log('opened dirs decreased:', counterD);
+          if (err) throw err;
+          next();
+      });
+}
+
+function finalStep(output, list, callback) {
+    return function () {
+        //console.log('check opening:', counterD, counterF, counterL);
+        if (counterF === 0 && counterD === 0 && counterL === 0) {
+            var ret = 'module.exports = ' + JSON.stringify(build(list));
+            require('fs').writeFile(output, ret, "utf8", callback);
+        }
+    };
+}
+
+exports.run = function (output, inputs, callback) {
+    var list = [],
+        next = finalStep(output, list, callback);
+    counterL++;
+    async
+      .files([inputs])
+      .exists()
+      .filter(function (file) {
+          return file.exists;
+      })
+      .stat()
+      .each(function (file) {
+        if (file.stat.isDirectory()) {
+            handleDirs(file.path, list, next);
+        } else {
+            handleFile(file.path, list, next);
+        }
+      })
+      .end(function (err, result) {
+          counterL--;
+          if (err) throw err;
+          next();
+      });
 };
-

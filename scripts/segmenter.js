@@ -14,7 +14,11 @@
 var path = require('path'),
     fs   = require('fs');
 
-function loadpath(basedir, targetfile) {
+function loadpath(from, to) {
+    if (!to) return '';
+    var lpath = path.relative(from, to);
+    lpath = lpath.substring(0, lpath.length - 3);
+    return lpath;
 }
 
 var mmseg = require('../lib/mmseg'),
@@ -29,11 +33,11 @@ var mmseg = require('../lib/mmseg'),
 exports.VERSION = mmseg.VERSION;
 
 exports.seg = function (options, text) {
-    if (options.dict) {
-        opts.dict = requrie(loadpath(__dirname, options.dict));
+    if (options.dictionary) {
+        opts.dictionary = requrie(loadpath(__dirname, options.dictionary));
     }
-    if (options.freq) {
-        opts.freq = requrie(loadpath(__dirname, options.freq));
+    if (options.frequency) {
+        opts.frequency = requrie(loadpath(__dirname, options.frequency));
     }
 
     var segmenter = mmseg.normal(opts);

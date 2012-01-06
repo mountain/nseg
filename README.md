@@ -42,13 +42,13 @@ segment text using default dictionary
 
 build user dictionary for loading aftermath
 
-    $ nmmsg build dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt
-    $ nmmsg build dict ~/project/data/dict.js ~/dict
+    $ nmmsg dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt
+    $ nmmsg dict ~/project/data/dict.js ~/dict
 
 build character-frequecy map for loading aftermath
 
-    $ nmmsg build freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv
-    $ nmmsg build freq ~/project/data/freq.js ~/freq
+    $ nmmsg freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv
+    $ nmmsg freq ~/project/data/freq.js ~/freq
 
 segment text using customized settings
 

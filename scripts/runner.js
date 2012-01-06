@@ -25,9 +25,8 @@ program
 
 program
 .command('dict <output> [inputs]')
-  .description('build trie tree for user dictionaries')
-  .action(function(output, inputs){
-      console.log('build trie tree at %s for user dictionaries: %s', output, inputs);
+  .description('build trie tree from user dictionaries')
+  .action(function (output, inputs) {
       triebuilder.run(output, inputs);
   }).on('--help', function () {
       console.log('  Examples:');
@@ -47,9 +46,8 @@ program
 
 program
 .command('freq <output> [inputs]')
-  .description('build character-frequency map for user data')
-  .action(function(output, inputs){
-      console.log('build character-frequency map at %s for user data: %s', output, inputs);
+  .description('build character-frequency map from user data')
+  .action(function (output, inputs) {
       freqbuilder.run(output, inputs);
   }).on('--help', function () {
       console.log('  Examples:');
@@ -74,7 +72,7 @@ program
   .option("-f, --frequency <freq>", "Which frequency map to use")
   .option("-i, --inputs <inputs>", "Which input files or directories to use")
   .option("-o, --output <output>", "Which output file or directory to use")
-  .action(function(text, options){
+  .action(function (text, options) {
       segmenter.seg(options, text);
   }).on('--help', function () {
       console.log('  Examples:');
@@ -90,8 +88,8 @@ program
   .command('inspect [word]')
   .description('inpect the trie structure of a specified word')
   .option("-d, --dictionary <dict>", "Which dictionary to use")
-  .action(function(word, options){
-      inspector.inspect(options, word);
+  .action(function (word, options) {
+      inspector.inspect(options.dictionary, word);
   }).on('--help', function () {
       console.log('  Examples:');
       console.log();
@@ -104,8 +102,8 @@ program
   .command('check [word]')
   .description('check the trie structure for existence of a specified word')
   .option("-d, --dictionary <dict>", "Which dictionary to use")
-  .action(function(word, options){
-      inspector.check(options, word);
+  .action(function (word, options) {
+      inspector.check(options.dictionary, word);
   }).on('--help', function () {
       console.log('  Examples:');
       console.log();
