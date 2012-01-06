@@ -187,8 +187,12 @@ exports.run = function (output, inputs, callback) {
     var list = [],
         next = finalStep(output, list, callback);
     counterL++;
+
+    if (typeof inputs === 'string') {
+        inputs = [inputs];
+    }
     async
-      .files([inputs])
+      .files(inputs)
       .exists()
       .filter(function (file) {
           return file.exists;

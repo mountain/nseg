@@ -79,8 +79,12 @@ exports.run = function (output, inputs, callback) {
     var freq = {},
         next = finalStep(output, freq, callback);
     counterL++;
+
+    if (typeof inputs === 'string') {
+        inputs = [inputs];
+    }
     async
-      .files([inputs])
+      .files(inputs)
       .exists()
       .filter(function (file) {
           return file.exists;
