@@ -115,7 +115,7 @@ var opts  = {
 var nmmsg = require('nmmsg').evented(opts);
 
 nmmsg.start(key);
-nmmsg.write(key, fragment);
+nmmsg.read(key, fragment);
 nmmsg.flush(key);
 nmmsg.end(key);
 
