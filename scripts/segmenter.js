@@ -29,16 +29,21 @@ var async = require('asyncjs'),
         dict: dict,
         freq: freq,
         logger: console
-    };
+    },
+    outs = {};
 
-function handleDirAsync(path, callback) {
+function handleDirAsync(dir, callback) {
     async
-        .readdir(path)
+        .readdir(dir)
         .stat()
         .each(function (file) {
             if (file.stat.isDirectory()) {
+                var basepath = dir.basepath;
+                file.basepath = basepath;
+                file.target = path.relative(basepath, dir);
                 handleDirAsync(file.path, callback);
             } else {
+                file.target = path.basename(file.path);
                 callback(null, file);
             }
         })
@@ -58,53 +63,70 @@ function selectInputsAsync(inputs, callback) {
         .stat()
         .each(function (file) {
             if (file.stat.isDirectory()) {
+                file.basepath = file.path;
                 handleDirAsync(file.path, callback);
             } else {
+                file.target = path.basename(file.path);
                 callback(null, file);
             }
         })
         .end();
 }
 
-function handleDirSync(path, callback) {
-    async
-        .readdir(path)
-        .stat()
-        .each(function (file) {
-            if (file.stat.isDirectory()) {
-                handleDirSync(file.path, callback);
+function handleDirSync(dir, basepath, callback) {
+    var inputs = fs.readdirSync(dir);
+    for (var i = 0, len = inputs.length; i < len; i++) {
+        var input = inputs[i];
+        var target = path.relative(basepath, dir);
+        if (path.existsSync(input)) {
+            var stat = fs.statSync(input);
+            if (stat.isDirectory()) {
+                handleDirSync(input, basepath, callback);
             } else {
-                callback(null, file.path);
+                var file = {
+                    path: input,
+                    target: target
+                };
+                callback(null, file);
             }
-        })
-        .end();
+        }
+    }
 }
 
 function selectInputsSync(inputs, callback) {
     if (typeof inputs === 'string') {
         inputs = [inputs];
     }
-    async
-        .files(inputs)
-        .exists()
-        .filter(function (file) {
-            return file.exists;
-        })
-        .stat()
-        .each(function (file) {
-            if (file.stat.isDirectory()) {
-                handleDirSync(file.path);
+    for (var i = 0, len = inputs.length; i < len; i++) {
+        var input = inputs[i];
+        if (path.existsSync(input)) {
+            var stat = fs.statSync(input);
+            if (stat.isDirectory()) {
+                handleDirSync(input, input, callback);
             } else {
-                callback(null, file.path);
+                var file = {
+                    path: input,
+                    target: path.basename(input)
+                };
+                callback(null, file);
             }
-        })
-        .end();
+        }
+    }
 }
 
-function bind(segmenter, output, input) {
+function bind(segmenter, target, input) {
+    var strmOut = fs.createWriteStream(target, {flags: 'w+', encoding: 'utf-8'});
+
     segmenter.register(input.path, function (words) {
-        //TODO
-        console.log(words);
+        for (var i = 0, len = words.length; i < len; i++) {
+            strmOut.write(words[i], 'utf-8');
+            strmOut.write(' ', 'utf-8');
+        }
+    });
+    segmenter.on('end', function () {
+        console.log('finished: ', target);
+        segmenter.flush();
+        strmOut.end();
     });
 
     var strmIn = fs.createReadStream(input.path, {encoding: 'utf-8'});
@@ -118,7 +140,8 @@ function bind(segmenter, output, input) {
         segmenter.read(input.path, data);
     });
     strmIn.on('end', function () {
-        segmenter.end(input.path);
+        //segmenter.end(input.path);
+        segmenter.read(input.path, null);
     });
 }
 
@@ -145,11 +168,24 @@ exports.seg = function (options, text) {
         .each(function (output) {
             if (output.stat.isDirectory()) {
                 selectInputsAsync(options.inputs, function (err, input) {
-                    bind(segmenter, output, input);
+                    if (err) throw err;
+                    var target = path.resolve(output, input.target);
+                    path.exists(target, function (exists) {
+                        if (exists) {
+                            throw 'file[' + target + '] exists! conflict should be resolved.';
+                        } else {
+                            bind(segmenter, target, input);
+                        }
+                    });
                 });
             } else {
                 selectInputsSync(options.inputs, function (err, input) {
-                    bind(segmenter, output, input);
+                    if (err) throw err;
+                    var target = path.resolve(output, input.target);
+                    if (path.existsSync(target)) {
+                        throw 'file[' + target + '] exists! conflict should be resolved.';
+                    }
+                    bind(segmenter, target, input);
                 });
             }
         })
