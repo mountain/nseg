@@ -48,14 +48,13 @@ function handleDirAsync(dir, callback) {
                 file.target = path.relative(basepath, dir);
                 handleDirAsync(file.path, callback);
             } else {
+                //console.log('path: ', file.path);
                 file.target = path.basename(file.path);
                 callback(null, file);
-                touched = true;
             }
         })
         .end(function () {
             counterDir--;
-            touched = true;
         });
 }
 
@@ -75,9 +74,9 @@ function selectInputsAsync(inputs, callback) {
                 file.basepath = file.path;
                 handleDirAsync(file.path, callback);
             } else {
+                //console.log('path: ', file.path);
                 file.target = path.basename(file.path);
                 callback(null, file);
-                touched = true;
             }
         })
         .end();
@@ -99,12 +98,10 @@ function handleDirSync(dir, basepath, callback) {
                     target: target
                 };
                 callback(null, file);
-                touched = true;
             }
         }
     }
     counterDir--;
-    touched = true;
 }
 
 function selectInputsSync(inputs, callback) {
@@ -123,10 +120,8 @@ function selectInputsSync(inputs, callback) {
                     target: path.basename(input)
                 };
                 callback(null, file);
-                touched = true;
             }
         }
-        touched = true;
     }
 }
 
@@ -148,28 +143,50 @@ var counterExec = 0,
     counterFile = 0;
 
 function bind(segmenter, target, input) {
-    var strmOut = fs.createWriteStream(target, {flags: 'w+', encoding: 'utf-8'});
+    //console.log('bind: ', target, input.path);
 
-    segmenter.register(input.path, function (words) {
-        for (var i = 0, len = words.length; i < len; i++) {
-            strmOut.write(words[i], 'utf-8');
-            strmOut.write(' ', 'utf-8');
+    var strmOut = fs.createWriteStream(target, {flags: 'w+', encoding: 'utf-8'});
+    strmOut.on('error', function (err) {
+        console.log('strmOut.error', counterExec, target, err);
+        //strmOut.destroy();
+    });
+    strmOut.on('close', function () {
+        counterExec--;
+        //console.log('strmOut.end', counterExec, target);
+    });
+
+    segmenter.register(input.path, function (words, bounds) {
+        //console.log('segmenter.write', bounds, target);
+        if (strmOut.writable) {
+            var out = '';
+            for (var i = 0; i < bounds; i++) {
+                if (words[i]) {
+                    out += words[i] + ' ';
+                }
+            }
+            //console.log(out);
+            strmOut.write(out, 'utf-8');
         }
+    });
+    segmenter.on('error', function (err) {
+        //console.log('segmenter.error', err);
     });
     segmenter.on('end', function () {
         segmenter.flush();
-        strmOut.end();
-        counterFile--;
-        counterExec--;
+        //console.log('segmenter.end', counterExec, target);
+        if (strmOut.writable) {
+            strmOut.end();
+        }
     });
 
-    var strmIn = fs.createReadStream(input.path, {encoding: 'utf-8'});
+    var strmIn = fs.createReadStream(input.path);
     strmIn.on('end', function () {
-        console.log('closing: ', input.path);
+        counterFile--;
+        //console.log('closing: ', input.path);
         segmenter.read(input.path, null);
     });
     strmIn.on('error', function (error) {
-        throw error;
+        console.log(error);
     });
     strmIn.on('open', function () {
         counterFile++;
@@ -183,6 +200,7 @@ function bind(segmenter, target, input) {
 function execute(segmenter, limits) {
     function executor() {
         var pair = dequeue();
+        //console.log(pair);
         if (pair === null) {
             return;
         }
@@ -190,7 +208,7 @@ function execute(segmenter, limits) {
         bind(segmenter, pair[0], pair[1]);
     }
     function throttled() {
-        console.log(counterFile, queue.length);
+        //console.log(touched, counterFile, counterExec, queue.length);
         if (touched && queue.length === 0 && counterDir === 0 && counterFile === 0) {
             return;
         }
@@ -227,12 +245,15 @@ exports.seg = function (options, text) {
                         throw err;
                     }
                     var target = path.resolve(output, input.target);
+                    //console.log('target: ', target);
                     path.exists(target, function (exists) {
                         if (exists) {
                             throw 'file[' + target + '] exists! conflict should be resolved.';
                         } else {
+                            //console.log('enqueue: ', target, input);
                             enqueue(target, input);
                         }
+                        touched = true;
                     });
                 });
             } else {
@@ -245,6 +266,7 @@ exports.seg = function (options, text) {
                         throw 'file[' + target + '] exists! conflict should be resolved.';
                     }
                     enqueue(target, input);
+                    touched = true;
                 });
             }
         })
