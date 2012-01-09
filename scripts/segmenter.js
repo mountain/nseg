@@ -125,7 +125,8 @@ function selectInputsSync(inputs, callback) {
     }
 }
 
-var queue = [];
+var queue    = [],
+    strmOuts = {};
 
 function enqueue(target, input) {
     queue.push([target, input]);
@@ -145,6 +146,8 @@ var counterExec = 0,
 function bind(segmenter, target, input) {
     //console.log('bind: ', target, input.path);
 
+    var key = input.path;
+
     var strmOut = fs.createWriteStream(target, {flags: 'w+', encoding: 'utf-8'});
     strmOut.on('error', function (err) {
         console.log('strmOut.error', counterExec, target, err);
@@ -152,8 +155,10 @@ function bind(segmenter, target, input) {
     });
     strmOut.on('close', function () {
         counterExec--;
+        delete strmOuts[key];
         //console.log('strmOut.end', counterExec, target);
     });
+    strmOuts[key] = strmOut;
 
     segmenter.register(input.path, function (words, bounds) {
         //console.log('segmenter.write', bounds, target);
@@ -165,17 +170,19 @@ function bind(segmenter, target, input) {
                 }
             }
             //console.log(out);
-            strmOut.write(out, 'utf-8');
+            strmOuts[key].write(out, 'utf-8');
+        } else {
+            console.log('conflict', target, input.path);
         }
     });
     segmenter.on('error', function (err) {
         //console.log('segmenter.error', err);
     });
-    segmenter.on('end', function () {
-        segmenter.flush();
+    segmenter.on('end', function (key) {
+        segmenter.flush(key);
         //console.log('segmenter.end', counterExec, target);
-        if (strmOut.writable) {
-            strmOut.end();
+        if (strmOuts[key].writable) {
+            strmOuts[key].end();
         }
     });
 
@@ -183,17 +190,17 @@ function bind(segmenter, target, input) {
     strmIn.on('end', function () {
         counterFile--;
         //console.log('closing: ', input.path);
-        segmenter.read(input.path, null);
+        segmenter.read(key, null);
     });
     strmIn.on('error', function (error) {
         console.log(error);
     });
     strmIn.on('open', function () {
         counterFile++;
-        segmenter.start(input.path);
+        segmenter.start(key);
     });
     strmIn.on('data', function (data) {
-        segmenter.read(input.path, data);
+        segmenter.read(key, data);
     });
 }
 
@@ -273,6 +280,6 @@ exports.seg = function (options, text) {
         .end();
 
     var segmenter = mmseg.evented(opts);
-    execute(segmenter, options.limits || 1);
+    execute(segmenter, options.limits || 6);
 };
 
