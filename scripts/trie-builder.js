@@ -1,5 +1,5 @@
 /**
- * trie-builder.js: build trie tree for dictionary
+ * hash-builder.js: build hash for dictionary
  *
  * nmmseg module: Node.js version of MMSEG for Chinese word segmentation
  * https://github.com/mountain/nmmseg/
@@ -7,19 +7,21 @@
  */
 
 function build(words) {
-    var trie = {},
+    var hash = {},
         maxlen = -1;
 
-    // Build a simple Trie structure
+    // Build a simple Hash structure
     for (var i = 0, l = words.length; i < l; i++)  {
         var word = words[i], wordlen = word.length;
-        trie[word] = 0;
-        if (maxlen < wordlen) maxlen = wordlen;
+        hash[word] = 1;
+        if (maxlen < wordlen) {
+            maxlen = wordlen;
+        }
     }
 
-    trie._ = maxlen;
+    hash._ = maxlen;
 
-    return trie;
+    return hash;
 }
 
 

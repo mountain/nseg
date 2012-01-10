@@ -11,7 +11,8 @@
  *
  */
 
-var path = require('path'),
+var util = require('util'),
+    path = require('path'),
     fs   = require('fs');
 
 function loadpath(from, to) {
@@ -26,12 +27,7 @@ function loadpath(from, to) {
 var async = require('asyncjs'),
     mmseg = require('../lib/mmseg'),
     dict  = require('../data/dict'),
-    freq  = require('../data/freq'),
-    opts  = {
-        dict: dict,
-        freq: freq,
-        logger: console
-    };
+    freq  = require('../data/freq');
 
 
 var touched = false, counterDir = 0;
@@ -145,63 +141,24 @@ var counterExec = 0,
 
 function bind(segmenter, target, input) {
     //console.log('bind: ', target, input.path);
-
-    var key = input.path;
-
     var strmOut = fs.createWriteStream(target, {flags: 'w+', encoding: 'utf-8'});
-    strmOut.on('error', function (err) {
-        console.log('strmOut.error', counterExec, target, err);
-        //strmOut.destroy();
-    });
     strmOut.on('close', function () {
         counterExec--;
-        delete strmOuts[key];
-        //console.log('strmOut.end', counterExec, target);
-    });
-    strmOuts[key] = strmOut;
-
-    segmenter.register(input.path, function (words, bounds) {
-        //console.log('segmenter.write', bounds, target);
-        if (strmOut.writable) {
-            var out = '';
-            for (var i = 0; i < bounds; i++) {
-                if (words[i]) {
-                    out += words[i] + ' ';
-                }
-            }
-            //console.log(out);
-            strmOuts[key].write(out, 'utf-8');
-        } else {
-            console.log('conflict', target, input.path);
-        }
-    });
-    segmenter.on('error', function (err) {
-        //console.log('segmenter.error', err);
-    });
-    segmenter.on('end', function (key) {
-        segmenter.flush(key);
-        //console.log('segmenter.end', counterExec, target);
-        if (strmOuts[key].writable) {
-            strmOuts[key].end();
-        }
     });
 
     var strmIn = fs.createReadStream(input.path);
     strmIn.on('end', function () {
         counterFile--;
-        //console.log('closing: ', input.path);
-        segmenter.read(key, null);
-    });
-    strmIn.on('error', function (error) {
-        console.log(error);
     });
     strmIn.on('open', function () {
         counterFile++;
-        segmenter.start(key);
     });
-    strmIn.on('data', function (data) {
-        segmenter.read(key, data);
+
+    var pipe = segmenter(strmIn, strmOut);
+    pipe.on('error', function (err) {
+        console.log('segmenter.error', err);
     });
+    pipe.start();
 }
 
 function execute(segmenter, limits) {
@@ -231,11 +188,12 @@ exports.VERSION = mmseg.VERSION;
 
 exports.seg = function (options, text) {
 
+    var dictionary, frequency;
     if (options.dictionary) {
-        opts.dictionary = require(loadpath(__dirname, options.dictionary));
+        dictionary = require(loadpath(__dirname, options.dictionary));
     }
     if (options.frequency) {
-        opts.frequency = require(loadpath(__dirname, options.frequency));
+        frequency = require(loadpath(__dirname, options.frequency));
     }
 
     async
@@ -279,7 +237,10 @@ exports.seg = function (options, text) {
         })
         .end();
 
-    var segmenter = mmseg.evented(opts);
-    execute(segmenter, options.limits || 6);
+    var segmenter = mmseg.evented({
+        dict: dictionary || dict,
+        freq: frequency || freq
+    });
+    execute(segmenter, options.limits || 1);
 };
 
