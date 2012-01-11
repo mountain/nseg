@@ -16,57 +16,49 @@ This project is tested with [Travis CI](http://travis-ci.org)
 Install
 =======
 
-Use nmmsg in your own package
+Use nseg in your own package
 
-    $ npm install nmmsg
+    $ npm install nseg
 
-Or if you want to use `nmmsg` command
+Or if you want to use `nseg` command
 
-    $ npm install -g nmmsg
+    $ npm install -g nseg
 
 Command line
 ============
 
-After intsalling globally, you can use `nmmsg` command to:
+After intsalling globally, you can use `nseg` command to:
 
 help
 
-    $ nmmsg help
+    $ nseg help
 
 segment text using default dictionary
 
-    $ nmmsg seg "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。"
-    $ nmmsg seg -i ~/project/text/shi.txt -o ~/project/output/shi.txt
-    $ nmmsg seg -i ~/project/text/a.txt ~/project/text/b.txt -o ~/project/output
-    $ nmmsg seg -i ~/project/text -o ~/project/output
+    $ nseg segf -i ~/project/text/shi.txt -o ~/project/output/shi.txt
+    $ nseg segd -i ~/project/text -o ~/project/output
 
 build user dictionary for loading aftermath
 
-    $ nmmsg dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt
-    $ nmmsg dict ~/project/data/dict.js ~/dict
+    $ nseg dict ~/project/data/dict.js ~/dict/dict1.txt ~/dict/dict2.txt
+    $ nseg dict ~/project/data/dict.js ~/dict
 
 build character-frequecy map for loading aftermath
 
-    $ nmmsg freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv
-    $ nmmsg freq ~/project/data/freq.js ~/freq
+    $ nseg freq ~/project/data/freq.js ~/freq/data1.csv ~/freq/data2.csv
+    $ nseg freq ~/project/data/freq.js ~/freq
 
 segment text using customized settings
 
-    $ nmmsg seg -d ~/project/data/dict.js "石室诗士施氏，嗜食狮，誓食十狮。"
-    $ nmmsg seg -d ~/project/data/dict.js -f ~/project/data/freq.js "石室诗士施氏"
-    $ nmmsg seg -l ~/project/lex/datetime.js ~/project/lex/sina.js "石室诗士施氏"
-
-inspect the trie structure for a word
-
-    $ nmmsg inspect "石狮"
-    $ nmmsg inspect -d ~/project/data/dict.js "石狮"
+    $ nseg seg -d ~/project/data/dict.js -f ~/project/data/freq.js -i ~/project/text -o ~/project/output
+    $ nseg seg -l ~/project/lex/ -i ~/project/text -o ~/project/output
 
 check the existence of a word
 
-    $ nmmsg check "石狮"
-    $ nmmsg check -d ~/project/data/dict.js "石狮"
+    $ nseg check "石狮"
+    $ nseg check -d ~/project/data/dict.js "石狮"
 
-Using nmmsg in program
+Using nseg in program
 ======================
 
 Preparation
@@ -93,11 +85,11 @@ var opts  = {
         logger: console
     };
 
-var nmmsg = require('nmmsg').normal(opts);
+var nseg = require('nseg').normal(opts);
 
 var text = "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。";
 
-var segmented = nmmsg(text);
+var segmented = nseg(text);
 
 ````
 
@@ -108,20 +100,21 @@ var opts  = {
         dict: dict,
         freq: freq,
         lex: [date, sina],
-        logger: console,
-        buffer: 30
+        logger: console
     };
 
-var nmmsg = require('nmmsg').evented(opts);
+var nseg = require('nseg').evented(opts);
 
-nmmsg.start(key);
-nmmsg.read(key, fragment);
-nmmsg.flush(key);
-nmmsg.end(key);
+var strmOut = fs.createWriteStream(target, {flags: 'w+', encoding: 'utf-8'}),
+    strmIn  = fs.createReadStream(input);
 
-nmmsg.register(key, function(segments) {
-    console.log(segments);
+var pipe = nseg(strmIn, strmOut);
+pipe.on('error', function (err) {
+    console.log('error', err);
 });
+
+pipe.start();
+
 ````
 
 Lexical handler customization
