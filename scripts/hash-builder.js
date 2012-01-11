@@ -1,8 +1,8 @@
 /**
  * hash-builder.js: build hash for dictionary
  *
- * nmmseg module: Node.js version of MMSEG for Chinese word segmentation
- * https://github.com/mountain/nmmseg/
+ * nseg module: Node.js version of MMSEG for Chinese word segmentation
+ * https://github.com/mountain/nseg/
  *
  */
 

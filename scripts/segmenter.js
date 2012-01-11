@@ -1,11 +1,11 @@
 /**
- * segmenter.js: do segmentation for input text
+ * segmenter.js: do segmentation for inputs
  *
- * nmmseg module: Node.js version of MMSEG for Chinese word segmentation
+ * nseg module: Node.js version of MMSEG for Chinese word segmentation
  *
- * https://github.com/mountain/nmmseg/
+ * https://github.com/mountain/nseg/
  *
- * By Mingli Yuan <mingli.yuan+nmmseg@gmail.com> (http://onecorner.org/)
+ * By Mingli Yuan <mingli.yuan+nseg@gmail.com> (http://onecorner.org/)
  *
  * MIT License
  *
@@ -86,7 +86,7 @@ function selectInputsSync(inputs, callback) {
     if (path.existsSync(input)) {
         var stat = fs.statSync(input);
         if (stat.isDirectory()) {
-            throw 'target[' + input + '] is a directory! It should be a file.';
+            throw 'input[' + input + '] is a directory! It should be a file.';
         } else {
             var file = {
                 path: input,
@@ -116,18 +116,19 @@ var counterExec = 0,
     counterFile = 0;
 
 function bind(segmenter, target, input) {
-    //console.log('bind: ', target, input.path);
+    //console.log('bind: ', target, input);
     var strmOut = fs.createWriteStream(target, {flags: 'w+', encoding: 'utf-8'});
     strmOut.on('close', function () {
         counterExec--;
     });
 
-    var strmIn = fs.createReadStream(input.path);
+    var strmIn = fs.createReadStream(input);
     strmIn.on('end', function () {
         counterFile--;
     });
     strmIn.on('open', function () {
         counterFile++;
+        touched = true;
     });
 
     var pipe = segmenter(strmIn, strmOut);
@@ -189,15 +190,7 @@ function mkdir_p(filepath, mode, callback, position) {
                 mkdir_p(filepath, mode, callback, position + 1);
             } else {
                 fs.mkdir(directory, mode, function (error) {
-                    //if (error) {
-                    //    if (callback) {
-                    //        return callback(error);
-                    //    } else {
-                    //        throw error;
-                    //    }
-                    //} else {
-                        mkdir_p(filepath, mode, callback, position + 1);
-                    //}
+                    mkdir_p(filepath, mode, callback, position + 1);
                 });
             }
         });
@@ -231,16 +224,18 @@ exports.segf = function (options) {
         .files([options.output])
         .exists()
         .filter(function (file) {
+            if (file.exists) {
+                touched = true;
+                throw 'file[' + file.path + '] exists! conflict should be resolved first.';
+            }
             return !file.exists;
         })
-        .stat()
         .each(function (output) {
             selectInputsSync(options.inputs, function (err, input) {
                 if (err) {
                     throw err;
                 }
-                safeEnqueue(output.path, input);
-                touched = true;
+                safeEnqueue(output.path, input.path);
             });
         })
         .end();
@@ -283,10 +278,10 @@ exports.segd = function (options) {
 
                     path.exists(target, function (exists) {
                         if (exists) {
-                            throw 'file[' + target + '] exists! conflict should be resolved.';
+                            throw 'file[' + target + '] exists! conflict should be resolved first.';
                         } else {
                             //console.log('enqueue: ', target, input);
-                            safeEnqueue(target, input);
+                            safeEnqueue(target, input.path);
                         }
                         touched = true;
                     });

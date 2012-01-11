@@ -122,8 +122,6 @@ program
           program.parse(['', '', 'segf', '--help'])
       else if (command === 'segd')
           program.parse(['', '', 'segd', '--help'])
-      else if (command === 'inspect')
-          program.parse(['', '', 'inspect', '--help'])
       else if (command === 'check')
           program.parse(['', '', 'check', '--help'])
       else

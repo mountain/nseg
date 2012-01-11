@@ -1,11 +1,11 @@
 /**
  * inspector.js: inspector for the trie structure
  *
- * nmmseg module: Node.js version of MMSEG for Chinese word segmentation
+ * nseg module: Node.js version of MMSEG for Chinese word segmentation
  *
- * https://github.com/mountain/nmmseg/
+ * https://github.com/mountain/nseg/
  *
- * By Mingli Yuan <mingli.yuan+nmmseg@gmail.com> (http://onecorner.org/)
+ * By Mingli Yuan <mingli.yuan+nseg@gmail.com> (http://onecorner.org/)
  *
  * MIT License
  *
@@ -20,15 +20,9 @@ function loadpath(from, to) {
     return lpath;
 }
 
-exports.inspect = function (dictpath, word) {
-    var lpath = loadpath(__dirname, dictpath) || '../data/dict.js',
-        dict  = require(lpath);
-    console.log(require('../lib/dictionary')(dict).inspect(word));
-};
-
 exports.check = function (dictpath, word) {
     var lpath = loadpath(__dirname, dictpath) || '../data/dict.js',
         dict  = require(lpath);
-    console.log(require('../lib/dictionary')(dict).check(word));
+    console.log(dict[word] === 1);
 };
 
