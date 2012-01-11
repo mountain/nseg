@@ -1,5 +1,6 @@
 Node.js Version of MMSG for Chinese Word Segmentation
 ======================================================
+[![Build Status](https://secure.travis-ci.org/mountain/nseg.png)](http://travis-ci.org/mountain/nseg)
 
 MMSG originally invented by Chih-Hao Tsai is a very popular Chinese word
 segmentation algorithm. Many implementations are available on different
@@ -7,11 +8,7 @@ platforms including Python, Java, etc.
 
 This package provide Node.js version of MMSG algorithm.
 
-Build status
-============
-
-This project is tested with [Travis CI](http://travis-ci.org)
-[![Build Status](https://secure.travis-ci.org/mountain/nmmseg.png)](http://travis-ci.org/mountain/nmmseg)
+So far this package is still in developing, but the basic functionalities are ready.
 
 Install
 =======
