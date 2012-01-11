@@ -1,12 +1,12 @@
 {
   "author": "Mingli Yuan <mingli.yuan+nmmseg@gmail.com> (http://onecorner.org/)",
-  "name": "nmmseg",
+  "name": "nseg",
   "description": "Node.js version of MMSEG for Chinese word segmentation",
   "version": "0.0.0",
-  "homepage": "https://github.com/mountain/nmmseg",
+  "homepage": "https://github.com/mountain/nseg",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mountain/nmmseg.git"
+    "url": "git://github.com/mountain/nseg.git"
   },
   "engines": {
     "node": "~0.6.6"
@@ -28,12 +28,12 @@
     "test": "vows --spec"
   },
   "bin": {
-    "nmmseg": "./bin/nmmseg"
+    "nseg": "./bin/nseg"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://github.com/mountain/mmseg/blob/master/LICENSE"
+      "url": "http://github.com/mountain/nseg/blob/master/LICENSE"
     }
   ]
 }
