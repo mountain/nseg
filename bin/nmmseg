@@ -11,5 +11,5 @@ cd `dirname ${CUR}` > /dev/null
 CUR=`pwd`;
 popd  > /dev/null
 
-exec "node" "--prof" "${CUR}/../scripts/runner.js" "$@"
-#exec "node" "${CUR}/../scripts/runner.js" "$@"
+#exec "node" "--prof" "${CUR}/../scripts/runner.js" "$@"
+exec "node" "${CUR}/../scripts/runner.js" "$@"
