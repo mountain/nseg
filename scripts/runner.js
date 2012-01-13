@@ -17,10 +17,10 @@ var program     = new (require('commander').Command)('nseg'),
     hashbuilder = require('./hash-builder'),
     freqbuilder = require('./freq-builder'),
     inspector   = require('./inspector'),
-    segmenter   = require('./segmenter');
+    filehandler = require('./file-handler');
 
 program
-  .version(segmenter.VERSION)
+  .version(filehandler.VERSION)
   .usage('<command> <options> [inputs]');
 
 program
@@ -73,7 +73,7 @@ program
   .option("-i, --inputs <inputs>", "Which input file to use")
   .option("-o, --output <output>", "Which output file to use")
   .action(function (options) {
-      segmenter.segf(options);
+      filehandler.segf(options);
   }).on('--help', function () {
       console.log('  Examples:');
       console.log();
@@ -89,7 +89,7 @@ program
   .option("-i, --inputs <inputs>", "Which input directories to use")
   .option("-o, --output <output>", "Which output directory to use")
   .action(function (options) {
-      segmenter.segd(options);
+      filehandler.segd(options);
   }).on('--help', function () {
       console.log('  Examples:');
       console.log();

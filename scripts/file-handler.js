@@ -1,5 +1,5 @@
 /**
- * segmenter.js: do segmentation for inputs
+ * file-handler.js: handle files
  *
  * nseg module: Node.js version of MMSEG for Chinese word segmentation
  *
