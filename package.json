@@ -9,7 +9,7 @@
     "url": "git://github.com/mountain/nseg.git"
   },
   "engines": {
-    "node": "~0.6.7"
+    "node": "~0.6"
   },
   "directories": {
     "bin": "./bin",
