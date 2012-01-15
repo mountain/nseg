@@ -79,7 +79,7 @@ var opts  = {
         lex: [date, sina],
     };
 
-var nseg = require('nseg').evented(opts);
+var nseg = require('nseg')(opts);
 
 var strmOut = fs.createWriteStream(target, {flags: 'w+', encoding: 'utf-8'}),
     strmIn  = fs.createReadStream(input);

@@ -13,8 +13,12 @@
 
 var mmseg = require('./lib/mmseg');
 
-module.exports = function (opts) {
-    return mmseg(opts);
+exports.evented = function (opts) {
+    return mmseg.evented(opts);
 };
 
-module.exports.VERSION = mmseg.VERSION;
+exports.normal = function (opts) {
+    return mmseg.normal(opts);
+};
+
+exports.VERSION = mmseg.VERSION;
