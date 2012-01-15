@@ -240,7 +240,7 @@ exports.segf = function (options) {
         })
         .end();
 
-    var segmenter = mmseg.evented({
+    var segmenter = mmseg({
         dict: dictionary || dict,
         freq: frequency || freq
     });
@@ -292,7 +292,7 @@ exports.segd = function (options) {
         })
         .end();
 
-    var segmenter = mmseg.evented({
+    var segmenter = mmseg({
         dict: dictionary || dict,
         freq: frequency || freq
     });

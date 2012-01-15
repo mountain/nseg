@@ -67,8 +67,6 @@ Preparation
 Examples
 --------
 
-Use case for normal mode
-
 ````javascript
 var dict  = require('../data/dict'),
     freq  = require('../data/freq'),
@@ -79,25 +77,6 @@ var opts  = {
         dict: dict,
         freq: freq,
         lex: [date, sina],
-        logger: console
-    };
-
-var nseg = require('nseg').normal(opts);
-
-var text = "石室诗士施氏，嗜食狮，誓食十狮。氏时时适市视狮。";
-
-var segmented = nseg(text);
-
-````
-
-Use case for evented mode
-
-````javascript
-var opts  = {
-        dict: dict,
-        freq: freq,
-        lex: [date, sina],
-        logger: console
     };
 
 var nseg = require('nseg').evented(opts);
