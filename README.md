@@ -47,8 +47,8 @@ build character-frequecy map for loading aftermath
 
 segment text using customized settings
 
-    $ nseg seg -d ~/project/data/dict.js -f ~/project/data/freq.js -i ~/project/text -o ~/project/output
-    $ nseg seg -l ~/project/lex/ -i ~/project/text -o ~/project/output
+    $ nseg segd -d ~/project/data/dict.js -f ~/project/data/freq.js -i ~/project/text -o ~/project/output
+    $ nseg segd -l ~/project/lex/ -i ~/project/text -o ~/project/output
 
 check the existence of a word
 
@@ -67,6 +67,8 @@ Preparation
 Examples
 --------
 
+Normal callback style
+
 ````javascript
 var dict  = require('../data/dict'),
     freq  = require('../data/freq'),
@@ -79,7 +81,29 @@ var opts  = {
         lex: [date, sina],
     };
 
-var nseg = require('nseg')(opts);
+var nseg = require('nseg').normal(opts);
+
+nseg('研究生源计划', function (result) {
+    console.log(result);
+});
+
+````
+
+Evented style
+
+````javascript
+var dict  = require('../data/dict'),
+    freq  = require('../data/freq'),
+    date  = require('../lex/datetime'),
+    sina  = require('../lex/sina');
+
+var opts  = {
+        dict: dict,
+        freq: freq,
+        lex: [date, sina],
+    };
+
+var nseg = require('nseg').evented(opts);
 
 var strmOut = fs.createWriteStream(target, {flags: 'w+', encoding: 'utf-8'}),
     strmIn  = fs.createReadStream(input);
