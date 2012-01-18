@@ -6,7 +6,7 @@ MMSG originally invented by Chih-Hao Tsai is a very popular Chinese word
 segmentation algorithm. Many implementations are available on different
 platforms including Python, Java, etc.
 
-This package provide Node.js version of MMSG algorithm.
+This package provide Node.js version of MMSG algorithm. The API is async and evented sytle.
 
 So far this package is still in developing, but the basic functionalities are ready.
 
