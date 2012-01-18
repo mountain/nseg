@@ -2,7 +2,7 @@
   "author": "Mingli Yuan <mingli.yuan+nmmseg@gmail.com> (http://onecorner.org/)",
   "name": "nseg",
   "description": "Node.js version of MMSEG for Chinese word segmentation",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "https://github.com/mountain/nseg",
   "repository": {
     "type": "git",

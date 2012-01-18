@@ -30,7 +30,7 @@ vows.describe('Segment by default settings').addBatch({
         '中华民国 和 中华人民共和国': function (result) {
             assert.equal(result, '中华民国 和 中华人民共和国');
         }
-    } /* ,
+    },
     'To be or not to be': {
         topic: function () {
             nseg = require('../index').normal();
@@ -43,6 +43,19 @@ vows.describe('Segment by default settings').addBatch({
         'To   be   or   not   to   be': function (result) {
             assert.equal(result, 'To   be   or   not   to   be');
         }
-    } */
+    },
+    'To be or not to be': {
+        topic: function () {
+            nseg = require('../index').normal();
+            var promise = new (events.EventEmitter)();
+            nseg('To be or not to be', function (text) {
+                promise.emit('success', text);
+            });
+            return promise;
+        },
+        'To   be   or   not   to   be': function (result) {
+            assert.equal(result, 'To   be   or   not   to   be');
+        }
+    }
 }).export(module);
 
