@@ -78,7 +78,7 @@ var dict  = require('../data/dict'),
 var opts  = {
         dict: dict,
         freq: freq,
-        lex: [date, sina],
+        lexers: [date, sina],
     };
 
 var nseg = require('nseg').normal(opts);
@@ -120,7 +120,17 @@ pipe.start();
 Lexical handler customization
 =============================
 
-Lexical handlers support definitions by regexp patterns or acceptor functions.
+Lexical handlers support definitions by acceptor functions.
+
+An acceptor function is a function with signature of
+
+function accept(curchar, undecidedprefix, nextchar)
+
+And return value should be one value from -1, 0, 1 on case of:
+
+* -1: we can decide a negitive result for the current character.
+* 0 : we should read more characters.
+* 1 : we can decide a negitive result for the current character.
 
 License
 =======
