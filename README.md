@@ -67,7 +67,7 @@ Preparation
 Examples
 --------
 
-Evented style
+Stream-pipe style
 
 ````javascript
 var dict  = require('../data/dict'),
