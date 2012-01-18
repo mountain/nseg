@@ -100,7 +100,7 @@ var dict  = require('../data/dict'),
 var opts  = {
         dict: dict,
         freq: freq,
-        lex: [date, sina],
+        lexers: [date, sina],
     };
 
 var nseg = require('nseg').evented(opts);
