@@ -67,28 +67,6 @@ Preparation
 Examples
 --------
 
-Normal callback style
-
-````javascript
-var dict  = require('../data/dict'),
-    freq  = require('../data/freq'),
-    date  = require('../lex/datetime'),
-    sina  = require('../lex/sina');
-
-var opts  = {
-        dict: dict,
-        freq: freq,
-        lexers: [date, sina],
-    };
-
-var nseg = require('nseg').normal(opts);
-
-nseg('研究生源计划', function (result) {
-    console.log(result);
-});
-
-````
-
 Evented style
 
 ````javascript
@@ -114,6 +92,28 @@ pipe.on('error', function (err) {
 });
 
 pipe.start();
+
+````
+
+Normal callback style (buggy)
+
+````javascript
+var dict  = require('../data/dict'),
+    freq  = require('../data/freq'),
+    date  = require('../lex/datetime'),
+    sina  = require('../lex/sina');
+
+var opts  = {
+        dict: dict,
+        freq: freq,
+        lexers: [date, sina],
+    };
+
+var nseg = require('nseg').normal(opts);
+
+nseg('研究生源计划', function (result) {
+    console.log(result);
+});
 
 ````
 
