@@ -44,17 +44,17 @@ vows.describe('Segment by default settings').addBatch({
             assert.equal(result, 'To   be   or   not   to   be');
         }
     },
-    'To be or not to be': {
+    '在我的后园，可以看见墙外有两株树，一株是枣树，还有一株也是枣树。': {
         topic: function () {
             nseg = require('../index').normal();
             var promise = new (events.EventEmitter)();
-            nseg('To be or not to be', function (text) {
+            nseg('在我的后园，可以看见墙外有两株树，一株是枣树，还有一株也是枣树。', function (text) {
                 promise.emit('success', text);
             });
             return promise;
         },
-        'To   be   or   not   to   be': function (result) {
-            assert.equal(result, 'To   be   or   not   to   be');
+        '在 我 的 后园 ， 可以 看见 墙外 有 两株 树 ， 一株 是 枣树 ， 还有 一株 也 是 枣树 。': function (result) {
+            assert.equal(result, '在 我 的 后园 ， 可以 看见 墙外 有 两株 树 ， 一株 是 枣树 ， 还有 一株 也是 枣树 。');
         }
     }
 }).export(module);

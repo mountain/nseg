@@ -36,7 +36,7 @@ function callback(result) {
         console.log(778 * (rounds - counter) * 1000 / (end - start));
     } else {
         counter--;
-        runnseg();
+        process.nextTick(runnseg);
     }
 }
 
@@ -53,7 +53,7 @@ function runnseg() {
 }
 
 function nsegGroup() {
-    runnseg(callback);
+    runnseg();
 }
 
 //runnseg();
